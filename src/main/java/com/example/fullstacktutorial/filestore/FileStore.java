@@ -1,9 +1,9 @@
 package com.example.fullstacktutorial.filestore;
 
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import java.io.InputStream;
-import java.lang.runtime.ObjectMethods;
 import java.util.Map;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +18,22 @@ public class FileStore {
   public FileStore(AmazonS3 s3) {
     this.s3 = s3;
   }
-//
-//  public void save(String path,String fileName,
-//      Optional<Map<String,String>> optionalMetadata,
-//      InputStream inputStream){
-//    ObjectMetadata objectMetadata
-//    try {
-//      s3.putObject(path,fileName,inputStream,metadata)
-//    }
-//  }
+
+  public void save(String path, String fileName,
+      Optional<Map<String, String>> optionalMetadata,
+      InputStream inputStream) {
+    ObjectMetadata metadata = new ObjectMetadata();
+
+    optionalMetadata.ifPresent(m -> {
+      if (!m.isEmpty()) {
+        m.forEach(metadata::addUserMetadata);
+
+      }
+    });
+    try {
+      s3.putObject(path, fileName, inputStream, metadata);
+    } catch (AmazonServiceException e) {
+      throw new IllegalStateException("Failed to stor file to s3", e);
+    }
+  }
 }

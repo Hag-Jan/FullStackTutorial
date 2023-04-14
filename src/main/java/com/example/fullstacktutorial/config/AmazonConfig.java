@@ -1,8 +1,10 @@
 package com.example.fullstacktutorial.config;
 
+
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +22,7 @@ public class AmazonConfig {
     return AmazonS3ClientBuilder
         .standard()
         .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
+        .withRegion(Regions.EU_NORTH_1)
         .build();
   }
 
